@@ -1,2 +1,2 @@
-compile: gcc lab7.c 
+compile: gcc Scheduler.c 
 run:./a.out
