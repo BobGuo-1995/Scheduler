@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-/*??? I am curious about how the following work? I looked up online and see that if we use the define directive it is like define our variable ahead of time*/
-//Yes. It's like define a constant variable
+//this is simply define the constant variable ahead of time 
 #define MAXCHAR 100
 #define MAXPROCESS 100
 #define MAXTIME 1000
@@ -94,8 +93,7 @@ int main() {
 		exit(1);
 	}
 	//read input file  
-	// ??? I think in c this means I am reading in decimal, decimal and a string. This is in the input file. 
-	//Yes. %d - integer variable, %s - string.
+	// %d - integer variable, %s - string.
 	fscanf(f1, "%d", &maxProcessNumber);
 	fscanf(f1, "%d", &overhead);
 	fscanf(f1, "%s", algName);
@@ -113,17 +111,15 @@ int main() {
 		algType = ALGO_R;
 		break;
 	default:
-	//??? What is the syntax doing here? 
 	//it's the same if (algName[1] == 'J' )algType=ALGO_SJ; else algType=ALGO_SR;
 		algType = algName[1] == 'J' ? ALGO_SJ : ALGO_SR;
 		break;
 	}
-	//??? I see here we check if the algorithm is RR, then we read in the time slice. 
-	//Yes. If we detect RR algorithm, it's mean we have slightly different input file (file has time slice)
+	//We check if the algorithm is RR, then we read in the time slice. 
+	//If we detect RR algorithm, it's mean we have slightly different input file (file has time slice)
 	if (strcmp(algName, "RR") == 0) fscanf(f1, "%d", &slicetime);
 	int cpuTime, ioTime;
 	printf("\n");
-	//??? I never seem this syntax before. can you tell me what we are doing here?
 	//calloc allocates 	MAXPROCESS*sizeof(struct CProcess) memory and fill it with 0
 	processes = calloc(MAXPROCESS, sizeof(struct CProcess));
 	int i;
@@ -134,9 +130,8 @@ int main() {
 		//Process-name Priority arrival-time CPU I/O CPU I/O CPU I/O CPU I/O... CPU 0
 		if (EOF == fscanf(f1, "%s%d%d", process->name, &process->priority, &process->arrivalTime))break;
 		printf("%s ", process->name);
-		//??? question 1: what is the mult doing here 
+		//mult's job
 		// we transform expression 3(1 2) to 1 2  1 2  1 2. mult=3
-		//??? question 2: what is int j=0 and the ";;" will do?
 		//	for (int j = 0;;) is equal  int j=0; while(1){ ...  infinity loop
 		for (int j = 0;;) {
 			int mult = 0;
@@ -166,7 +161,7 @@ int main() {
 	//simulator
 	//********
 	
-	//??? ListInit(&qready); ListInit(&qwait); ListInit(&qblock); I never seem this syntax before, can you explain?
+	
 	//we need an object like vector<int> in the c++
 	//for this we define the MList structure and several functions for adding, removing and finding for an element
 	//The C language has no constructor, so we must manually initiate the structure. 
@@ -198,7 +193,6 @@ int main() {
 	printf("\n\nresult\n************\n\n");
 	printf("Wall clock: %d\n", t - 1);
 	printf("Algorithm: %s\n", algoTypeString[algType]);
-	//??? what is the number in front of it doing? 
 	//%3s  %-15s%10s%10s%10s%10s%10s%10s - formatted output
 	//%3s - ouput string, width 3 , right justification 
 	//%-15s - ouput string, width 15 , left justification 
@@ -215,14 +209,11 @@ int main() {
 
 void AlgRR()
 {
-	float quantum = (float)slicetime;//??? for round-robin we will read in the time-slice and the idea of time slice is only for the round robin right? not for the other algorithm.
-	// yes	
-	int  p, j;//??? what will our p and j represent? 
+	float quantum = (float)slicetime;
+	int  p, j;
 	//p - id of the current process, j - current running position of the current process 
-	//??? why are we using preincrementation instead of post incrementation like"t++" here 
 	//++t is slightly faster than t++
 	for (t = 0; t < MAXTIME; ++t) {
-	//??? I don't know what will the "first: do here " both regarding the syntax of how we use first and how the logic work here. 
 	//first:  is label for goto. Command goto first;
 	// for example loop for(int i=0;i<10;++i){cout<<i;}
 	//int i=0;
@@ -266,14 +257,12 @@ void AlgRR()
 		if (n1 == n) break;
 	}
 }
-void AlgFCFS() //??? basically it is saying if the time slice is big enough RR will become first come first serve? 
-//Yes
+void AlgFCFS() //basically it is saying if the time slice is big enough RR will become first come first serve
 {
 	slicetime = 10000;
 	AlgRR();
 }
-//??? since we read in the piority from the file, how would we sort the piority when we read in the file? 
-//This function is not related to the file reading.
+
 //We use this function in the qsort function to order processes by priority
 //qsort(qready.data, qready.n, sizeof(int), CompPriority);
 int CompPriority(const void *pleft, const void *pright) {
@@ -322,7 +311,7 @@ void AlgSJN()
 	int  p, j;
 	for (t = 0; t < MAXTIME; ++t) {
 	first:
-	//??? I think 
+
 	//we sort qready by shortest time
 		qsort(qready.data, qready.n, sizeof(int), CompSJN);
 		p = qready.data[0];
@@ -397,7 +386,6 @@ void AlgSRTN()
 		if (n1 == n) break;
 	}
 }
-//??? what is this for ? 
 //It's common function for all algorithms
 //In this function, we process arrival and wait (I / O operation)
 void WaitAlg()
